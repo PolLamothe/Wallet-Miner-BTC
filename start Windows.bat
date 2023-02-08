@@ -1,0 +1,1 @@
+Windows\Scripts\python.exe Start.py

@@ -1,0 +1,166 @@
+class hash_256():
+    
+    def init(self):
+        self.NOT_NULL_LEN = 0
+        self.h0 = '0x6a09e667'
+        self.h1 = '0xbb67ae85'
+        self.h2 = '0x3c6ef372'
+        self.h3 = '0xa54ff53a'
+        self.h4 = '0x510e527f'
+        self.h5 = '0x9b05688c'
+        self.h6 = '0x1f83d9ab'
+        self.h7 = '0x5be0cd19'
+        self.const = ['0x428a2f98',
+        '0x71374491',
+        '0xb5c0fbcf',
+        '0xe9b5dba5',
+        '0x3956c25b',
+        '0x59f111f1',
+        '0x923f82a4',
+        '0xab1c5ed5',
+        '0xd807aa98',
+        '0x12835b01',
+        '0x243185be',
+        '0x550c7dc3',
+        '0x72be5d74',
+        '0x80deb1fe',
+        '0x9bdc06a7',
+        '0xc19bf174',
+        '0xe49b69c1',
+        '0xefbe4786',
+        '0x0fc19dc6',
+        '0x240ca1cc',
+        '0x2de92c6f',
+        '0x4a7484aa',
+        '0x5cb0a9dc',
+        '0x76f988da',
+        '0x983e5152',
+        '0xa831c66d',
+        '0xb00327c8',
+        '0xbf597fc7',
+        '0xc6e00bf3',
+        '0xd5a79147',
+        '0x06ca6351',
+        '0x14292967',
+        '0x27b70a85',
+        '0x2e1b2138',
+        '0x4d2c6dfc',
+        '0x53380d13',
+        '0x650a7354',
+        '0x766a0abb',
+        '0x81c2c92e',
+        '0x92722c85',
+        '0xa2bfe8a1',
+        '0xa81a664b',
+        '0xc24b8b70',
+        '0xc76c51a3',
+        '0xd192e819',
+        '0xd6990624',
+        '0xf40e3585',
+        '0x106aa070',
+        '0x19a4c116',
+        '0x1e376c08',
+        '0x2748774c',
+        '0x34b0bcb5',
+        '0x391c0cb3',
+        '0x4ed8aa4a',
+        '0x5b9cca4f',
+        '0x682e6ff3',
+        '0x748f82ee',
+        '0x78a5636f',
+        '0x84c87814',
+        '0x8cc70208',
+        '0x90befffa',
+        '0xa4506ceb',
+        '0xbef9a3f7',
+        '0xc67178f2']
+    
+    #функция бинарного сдвига
+    def shift(self,lst, steps):
+        if steps < 0:
+            steps = abs(steps)
+            for i in range(steps):
+                lst.append(lst.pop(0))
+        else:
+            for i in range(steps):
+                lst.insert(0, lst.pop())
+        return ''.join(lst)
+    
+    #бинарное представление
+    def bin_text(self,text):
+        bin_mas = [(8 - int(len(bin(ord(i))[2:]))) * '0' + str(bin(ord(i))[2:]) for i in text]
+        bin_mas.append('10000000')
+        while (len(''.join(bin_mas))+64)%(512)!=0:
+            bin_mas.append('00000000')
+        return bin_mas
+    
+    #big_endian
+    def big_endian(self,text,bin_mas):
+        big_endian = bin(len(text)*8)[2:]
+        while len(big_endian) != 64:
+            big_endian = '0'+big_endian
+        big_endian_mas = [big_endian[i:i+8] for i in range(0, len(big_endian), 8)]
+        bin_mas.extend(big_endian_mas)
+        return bin_mas
+    
+    #очередь сообщений
+    def bin_message(self,bin_mas):
+        bin_mas_32 = [''.join(bin_mas)[i:i+32] for i in range(0, len(''.join(bin_mas)), 32)]
+        self.NOT_NULL_LEN = len(bin_mas_32)
+        bin_mas_32.extend((('0'*32+' ')*(64-len(bin_mas_32))).split(' ')[:-1])
+        return bin_mas_32
+
+    #изменение нулевых индексов
+    def change_null(self, bin_mas_32):
+        for i in range(self.NOT_NULL_LEN,len(bin_mas_32)):
+            s0 = (int(self.shift(list(bin_mas_32[i-15]),7),2)%2**32) ^ (int(self.shift(list(bin_mas_32[i-15]),18),2)%2**32) ^ int(((32 - int(len(bin(int(bin_mas_32[i-15], 2)>>3)[2:]))) * '0' + bin(int(bin_mas_32[i-15], 2)>>3)[2:]),2)
+            s1 = (int(self.shift(list(bin_mas_32[i-2]),17),2)%2**32) ^ (int(self.shift(list(bin_mas_32[i-2]),19),2)%2**32) ^ int(((32 - int(len(bin(int(bin_mas_32[i-2], 2)>>10)[2:]))) * '0' + bin(int(bin_mas_32[i-2], 2)>>10)[2:]),2)
+            bin_mas_32[i] = bin((int(bin_mas_32[i-16],2) + s0 + int(bin_mas_32[i-7],2) + s1)%2**32)[2:]
+            bin_mas_32 = [(32 - len(i)) * '0' + i for i in bin_mas_32]
+        return bin_mas_32
+    
+    #цикл сжатия
+    def compression(self, bin_mas_32):
+        a = (32-len(bin(int(self.h0,16))[2:]))*'0'+bin(int(self.h0,16))[2:]
+        b = (32-len(bin(int(self.h1,16))[2:]))*'0'+bin(int(self.h1,16))[2:]
+        c = (32-len(bin(int(self.h2,16))[2:]))*'0'+bin(int(self.h2,16))[2:]
+        d = (32-len(bin(int(self.h3,16))[2:]))*'0'+bin(int(self.h3,16))[2:]
+        e = (32-len(bin(int(self.h4,16))[2:]))*'0'+bin(int(self.h4,16))[2:]
+        f = (32-len(bin(int(self.h5,16))[2:]))*'0'+bin(int(self.h5,16))[2:]
+        g = (32-len(bin(int(self.h6,16))[2:]))*'0'+bin(int(self.h6,16))[2:]
+        h = (32-len(bin(int(self.h7,16))[2:]))*'0'+bin(int(self.h7,16))[2:]
+        
+        for i in range(64):
+            s1 = int(self.shift(list(e),6),2) ^ int(self.shift(list(e),11),2) ^ int(self.shift(list(e),25),2)
+            ch = (int(e,2) & int(f,2)) ^ (~int(e,2) & int(g,2))
+            temp1 = (int(h,2) + s1 + ch + int(self.const[i],16) +int(bin_mas_32[i],2))%2**32
+            s0 = int(self.shift(list(a),2),2) ^ int(self.shift(list(a),13),2) ^ int(self.shift(list(a),22),2)
+            maj = (int(a,2) & int(b,2)) ^ (int(a,2) & int(c,2)) ^ (int(b,2) & int(c,2))
+            temp2 = (s0 + maj)%2**32
+            h = (32 -len(g))*'0' +g
+            g = (32 - len(f))*'0' + f
+            f = (32 - len(e))*'0' + e
+            e = (32 - len(bin((int(d,2) + temp1)%2**32)[2:]))*'0' + bin((int(d,2) + temp1)%2**32)[2:]
+            d = (32 - len(c))*'0' + c
+            c = (32 - len(b))*'0' + b
+            b = (32 - len(a))*'0' + a
+            a = (32 - len(bin((temp1 + temp2)%2**32)[2:]))*'0' + bin((temp1 + temp2)%2**32)[2:]
+        
+        self.h0 = bin((int(self.h0,16) + int(a,2))%2**32)[2:]
+        self.h1 = bin((int(self.h1,16) + int(b,2))%2**32)[2:]
+        self.h2 = bin((int(self.h2,16) + int(c,2))%2**32)[2:]
+        self.h3 = bin((int(self.h3,16) + int(d,2))%2**32)[2:]
+        self.h4 = bin((int(self.h4,16) + int(e,2))%2**32)[2:]
+        self.h5 = bin((int(self.h5,16) + int(f,2))%2**32)[2:]
+        self.h6 = bin((int(self.h6,16) + int(g,2))%2**32)[2:]
+        self.h7 = bin((int(self.h7,16) + int(h,2))%2**32)[2:]
+        
+    def hashText(self,text):
+        self.init()
+        bin_mas = self.bin_text(text)
+        bin_mas = self.big_endian(text,bin_mas)
+        bin_mas_32 = self.bin_message(bin_mas)
+        bin_mas_32 = self.change_null(bin_mas_32)
+        self.compression(bin_mas_32)
+        hash = hex(int(self.h0,2))[2:] + hex(int(self.h1,2))[2:] + hex(int(self.h2,2))[2:]+ hex(int(self.h3,2))[2:]+ hex(int(self.h4,2))[2:]+ hex(int(self.h5,2))[2:]+ hex(int(self.h6,2))[2:]+ hex(int(self.h7,2))[2:]
+        return hash.upper()

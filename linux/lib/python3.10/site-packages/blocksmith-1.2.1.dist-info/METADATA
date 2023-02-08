@@ -1,0 +1,26 @@
+Metadata-Version: 2.1
+Name: blocksmith
+Version: 1.2.1
+Summary: Bitcoin/Ethereum key manipulation
+Home-page: https://github.com/Destiner/blocksmith
+Author: Timur Badretdinov
+Author-email: destinerx@gmail.com
+License: UNKNOWN
+Keywords: security,cryptography,cryptocurrency,bitcoin
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Security :: Cryptography
+Classifier: Topic :: Software Development :: Libraries
+Requires-Dist: ecdsa
+Requires-Dist: pycryptodome
+
+UNKNOWN
+
+
