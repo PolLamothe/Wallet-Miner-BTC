@@ -121,17 +121,17 @@ def miner():#le code en lui même
                 deinit()
                 address_send = str(address_send1)
                 msg = MIMEMultipart()
-                msg['From'] = 'python.pol29@outlook.fr' #l'adresse depuis laquelle le mail sera envoyée
-                msg['To'] = 'pol.drackack@gmail.com' #l'adresse a laquelle le mail sera envoyée
+                msg['From'] = '' #l'adresse depuis laquelle le mail sera envoyée
+                msg['To'] = ''#adresse a laquelle le mail sera envoyée
                 msg['Subject'] = 'GG Wallet' #sujet
                 message = MIMEText(address_send) #message
                 msg.attach(message)
-                mailserver = smtplib.SMTP('smtp.office365.com', 587) #le serveur SMTP qui nous permettera d'envoyer le mail
+                mailserver = smtplib.SMTP('smtpserver', 587) #le serveur SMTP qui nous permettera d'envoyer le mail
                 mailserver.ehlo()
                 mailserver.starttls()
                 mailserver.ehlo()
-                mailserver.login('python.pol29@outlook.fr', '236NS1SX1') #on se connecte a l'adresse depuis laquelle on envoie le mail
-                mailserver.sendmail('python.pol29@outlook.fr', 'pol.drackack@gmail.com', msg.as_string()) #on envoie le mail
+                mailserver.login('from', 'password') #on se connecte a l'adresse depuis laquelle on envoie le mail
+                mailserver.sendmail('from', 'to', msg.as_string()) #on envoie le mail
                 mailserver.quit()
                 t = 0
                 i = True
