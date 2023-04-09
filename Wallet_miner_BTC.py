@@ -45,10 +45,10 @@ def miner():#le code en lui même
     from Crypto.Hash import keccak
     checkrep = False
 
-    def clear_console():#définir la fonction qui reset le terminale
+    def clear_console():#définir la fonction qui reset le terminal
         os.system('cls')
     while stop != "stop":#boucle infinie
-        while i == False: #tant que l'on a pas trouver d'addresse avec des fonds
+        while i == False: #tant que l'on a pas trouvé d'addresse avec des fonds
 
             kg = blocksmith.KeyGenerator()#début génération de l'addresse public bitcoin
             kg.seed_input("Trulyrandomstring.Irolledadice and got4.")
@@ -98,12 +98,12 @@ def miner():#le code en lui même
             html_text = requests.get(url).text #on récupère le contenu de la page
             soup = BeautifulSoup(html_text, 'html.parser')
 
-            balancebtc = soup.find("h5", {"class": "bold confirmed-balance"}) #trouver la donnée contenant le solde avec le type de balise et le nom de la classe html
+            balancebtc = soup.find("h5", {"class": "bold confirmed-balance"}) #trouver la donné contenant le solde avec le type de balise et le nom de la classe html
             balance = str(balancebtc)
             h5 = 'h5' #définitions les variables qui nous servirons a filtrer le résultat obtenus
             annoying = '0em'
             useless = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ></=\"_:;$ -"+h5 #fin
-            for x in range(len(useless)): # on enleve les caractères non important qui sont la a cause de la récupération des balises HTML
+            for x in range(len(useless)): # on enleve les caractères non important qui sont ici du à la récupération des balises HTML
                 balance = balance.replace(useless[x],"")
                 balance = balance.replace(annoying,"")
                 balance = balance.replace("\n","")
@@ -115,14 +115,14 @@ def miner():#le code en lui même
                 print(Fore.GREEN + Style.BRIGHT + "found")
                 print(Fore.GREEN + Style.BRIGHT +"private key = ",private_key)
                 if float(balance_check) > 0.0:
-                    address_send1 = 'voici la public key :',address," voici le private key : ",str("".join(reversed(private_key))) #on définit le message qui sera envoyée par mail (inversion de l'adresse privée)
+                    address_send1 = 'voici la public key :',address," voici le private key : ",str("".join(reversed(private_key))) #on définit le message qui sera envoyé par mail (inversion de l'adresse privée)
                     print(Fore.GREEN + Style.BRIGHT +"public key Bitcoin :",address,"   ", str(balance_check)," BTC") #on imprime la clée public et le nombre de BTC sur l'adresse
                 sleep(0.2)
                 deinit()
                 address_send = str(address_send1)
                 msg = MIMEMultipart()
-                msg['From'] = '' #l'adresse depuis laquelle le mail sera envoyée
-                msg['To'] = ''#adresse a laquelle le mail sera envoyée
+                msg['From'] = '' #l'adresse depuis laquelle le mail sera envoyé
+                msg['To'] = ''#adresse a laquelle le mail sera envoyé
                 msg['Subject'] = 'GG Wallet' #sujet
                 message = MIMEText(address_send) #message
                 msg.attach(message)
