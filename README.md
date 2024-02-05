@@ -1,2 +1,4 @@
 # Wallet Miner BTC
- Un programme codé en python qui vise a récupérer les bitcoins qui sont stockés sur des adresses perdues
+This program is a software that aim to prove how much brute-force resilient is the Bitcoin system
+
+*All the dependencies is in the venv folder*
