@@ -20,9 +20,7 @@ from threading import Semaphore
 screenlock = Semaphore(value=1)
 
 def miner():#le code en lui même
-    from threading import Semaphore
     from colorama import Back, Fore, Style, deinit, init
-    from random import choice, randint
     from bs4 import BeautifulSoup
     import requests
     i = False
@@ -31,18 +29,10 @@ def miner():#le code en lui même
     import codecs
     import ecdsa
     import base58
-    from base58 import b58decode, b58encode
-    from time import sleep
-    import secrets
     t = 0
     import blocksmith
     stop = "nothing"
     import os
-    import sys
-    import smtplib, ssl
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-    from Crypto.Hash import keccak
 
     def clear_console():#définir la fonction qui reset le terminal
         os.system('cls')
