@@ -82,30 +82,29 @@ def miner():#le code en lui même
                 byte_25_address = modified_key_hash + checksum
 
                 address = base58.b58encode(bytes(bytearray.fromhex(byte_25_address))).decode('utf-8') #Fin de la génération avec comme résultat une adresse au format legacy                     
-
+                address = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
                 url = 'https://bitaps.com/'+address #addresse de la page avec le solde de l'adresse générée
 
                 html_text = requests.get(url).text #on récupère le contenu de la page
                 soup = BeautifulSoup(html_text, 'html.parser')
-
-                balancebtc = soup.find("h5", {"class": "bold confirmed-balance"}) #trouver la donné contenant le solde avec le type de balise et le nom de la classe html
+                balancebtc = soup.find("div", {"class": "tx-amount p-value"}) #trouver la donné contenant le solde avec le type de balise et le nom de la classe html
                 balance = str(balancebtc)
                 h5 = 'h5' #définitions les variables qui nous servirons a filtrer le résultat obtenus
-                annoying = '0em'
+                annoying = '0.7em'
                 useless = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ></=\"_:;$ -"+h5 #fin
                 for x in range(len(useless)): # on enleve les caractères non important qui sont ici du à la récupération des balises HTML
                     balance = balance.replace(useless[x],"")
                     balance = balance.replace(annoying,"")
                     balance = balance.replace("\n","")
                 balance_check = float(balance) #nombre de BTC sur l'adresse générée
-                if  float(balance_check) > 0.0: #si jamais le nombre de BTC sur l'adresse est supérieur à 0       
+                if  float(balance_check) > 0.0: #si jamais le nombre de BTC sur l'adresse est supérieur à 0    
                     screenlock.acquire() #le thread en cours verrouille le terminale pour lui
                     init()
                     print(Fore.GREEN + Style.BRIGHT + "found")
                     print(Fore.GREEN + Style.BRIGHT +"private key = ",private_key)
                     if float(balance_check) > 0.0:
                         address_send1 = 'voici la public key :',address," voici le private key : ",str("".join(reversed(private_key))) #on définit le message qui sera envoyé par mail (inversion de l'adresse privée)
-                        print(Fore.GREEN + Style.BRIGHT +"public key Bitcoin :",address,"   ", str(balance_check)," BTC") #on imprime la clée public et le nombre de BTC sur l'adresse
+                        print(Fore.GREEN + Style.BRIGHT +"public key Bitcoin :",address,"   ", str(balance_check)," $") #on imprime la clée public et le nombre de BTC sur l'adresse
                         stop = "stop"
                     t = 0
                     i = True
@@ -122,6 +121,7 @@ def miner():#le code en lui même
                         clear_console()
                         t = 0
         except:
+            print("erreur")
             pass
         while i == True: #on attend une action de l'utilisateur pour reprendre le proccesus
             init()
