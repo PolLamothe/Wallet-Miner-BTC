@@ -82,7 +82,6 @@ def miner():#le code en lui même
                 byte_25_address = modified_key_hash + checksum
 
                 address = base58.b58encode(bytes(bytearray.fromhex(byte_25_address))).decode('utf-8') #Fin de la génération avec comme résultat une adresse au format legacy                     
-                address = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
                 url = 'https://bitaps.com/'+address #addresse de la page avec le solde de l'adresse générée
 
                 html_text = requests.get(url).text #on récupère le contenu de la page
